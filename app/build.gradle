@@ -43,6 +43,14 @@ dependencies {
     // firebase real-time database version
     def firebase_database_version = '18.0.1'
     implementation "com.google.firebase:firebase-database:$firebase_database_version"
+
+    // material components
+    def material_components = '1.1.0-alpha09'
+    implementation "com.google.android.material:material:$material_components"
+
+    // material progressbar
+    def material_progressbar = '1.6.1'
+    implementation "me.zhanghai.android.materialprogressbar:library:$material_progressbar"
 }
 
 apply plugin: 'com.google.gms.google-services'
