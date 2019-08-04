@@ -31,4 +31,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // firebase auth version
+    def firebase_auth_version = '18.1.0'
+    implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
+
+    // firebase storage version
+    def firebase_storage_version = '18.1.1'
+    implementation "com.google.firebase:firebase-storage:$firebase_storage_version"
+
+    // firebase real-time database version
+    def firebase_database_version = '18.0.1'
+    implementation "com.google.firebase:firebase-database:$firebase_database_version"
 }
+
+apply plugin: 'com.google.gms.google-services'
