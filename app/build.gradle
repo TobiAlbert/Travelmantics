@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -51,6 +55,9 @@ dependencies {
     // material progressbar
     def material_progressbar = '1.6.1'
     implementation "me.zhanghai.android.materialprogressbar:library:$material_progressbar"
+
+    // circle image view
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
