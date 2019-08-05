@@ -48,6 +48,9 @@ dependencies {
     def firebase_database_version = '18.0.1'
     implementation "com.google.firebase:firebase-database:$firebase_database_version"
 
+    // firebase ui auth
+    implementation "com.firebaseui:firebase-ui-auth:4.3.1"
+
     // material components
     def material_components = '1.1.0-alpha09'
     implementation "com.google.android.material:material:$material_components"
