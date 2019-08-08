@@ -12,7 +12,7 @@ import xyz.tobidaada.travelmantics.modules.insert.InsertActivity
 import xyz.tobidaada.travelmantics.shared.models.TravelDeal
 import xyz.tobidaada.travelmantics.shared.utils.FirebaseUtil
 
-class DealActivity : AppCompatActivity() {
+class DealActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
 
     private lateinit var mFirebaseDatabase: FirebaseDatabase
     private lateinit var mDatabaseReference: DatabaseReference
@@ -62,16 +62,13 @@ class DealActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@DealActivity)
             setHasFixedSize(true)
         }
-
-        FirebaseUtil.openFbReference("traveldeals")
-
-        mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase
-        mDatabaseReference = FirebaseUtil.mDatabaseReference
-        mDatabaseReference.addChildEventListener(childEventListener)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.list_activity_menu, menu)
+
+        val insertMenu = menu.findItem(R.id.menu_insert)
+        insertMenu.isVisible = FirebaseUtil.isAdmin
         return true
     }
 
@@ -81,8 +78,33 @@ class DealActivity : AppCompatActivity() {
                 startActivity(InsertActivity.getStartIntent(this))
                 true
             }
+            R.id.menu_logout -> {
+                FirebaseUtil.logUserOut(this)
+                FirebaseUtil.detachListener()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        FirebaseUtil.detachListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        FirebaseUtil.openFbReference("traveldeals", this)
+
+        mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase
+        mDatabaseReference = FirebaseUtil.mDatabaseReference
+        mDatabaseReference.addChildEventListener(childEventListener)
+
+        FirebaseUtil.attachListener()
+    }
+
+    override fun showMenu() {
+        invalidateOptionsMenu()
     }
 
     private fun openInsertActivity(travelDeal: TravelDeal) {

@@ -15,7 +15,7 @@ import xyz.tobidaada.travelmantics.shared.models.TravelDeal
 import xyz.tobidaada.travelmantics.shared.utils.showToast
 import xyz.tobidaada.travelmantics.shared.utils.FirebaseUtil
 
-class InsertActivity : AppCompatActivity() {
+class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
 
     private lateinit var mFirebaseDatabase: FirebaseDatabase
     private lateinit var mDatabaseReference: DatabaseReference
@@ -27,7 +27,7 @@ class InsertActivity : AppCompatActivity() {
 
         fun getStartIntent(context: Context, deal: TravelDeal? = null): Intent {
             return Intent(context, InsertActivity::class.java).apply {
-                putExtra(TRAVEL_DEAL_EXTRA, deal)
+                if (deal != null) putExtra(TRAVEL_DEAL_EXTRA, deal)
             }
         }
     }
@@ -36,7 +36,7 @@ class InsertActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_insert)
 
-        FirebaseUtil.openFbReference("traveldeals")
+        FirebaseUtil.openFbReference("traveldeals", this)
 
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase
         mDatabaseReference = FirebaseUtil.mDatabaseReference
@@ -51,8 +51,12 @@ class InsertActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.insert_menu, menu)
+
+        menu.findItem(R.id.menu_delete).isVisible = FirebaseUtil.isAdmin
+        menu.findItem(R.id.menu_save).isVisible = FirebaseUtil.isAdmin
+        enableEditText(FirebaseUtil.isAdmin)
         return true
     }
 
@@ -100,6 +104,16 @@ class InsertActivity : AppCompatActivity() {
 
     private fun backToList() {
         startActivity(Intent(this, DealActivity::class.java))
+    }
+
+    override fun showMenu() {
+        invalidateOptionsMenu()
+    }
+
+    fun enableEditText(isEnabled: Boolean) {
+        priceEt.isEnabled = isEnabled
+        descriptionEt.isEnabled = isEnabled
+        titleEt.isEnabled = isEnabled
     }
 
 }
