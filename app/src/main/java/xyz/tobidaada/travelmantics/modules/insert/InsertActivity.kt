@@ -1,5 +1,6 @@
 package xyz.tobidaada.travelmantics.modules.insert
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
     companion object {
 
         const val TRAVEL_DEAL_EXTRA = "travel_deal_extra"
+        const val UPLOAD_IMAGE_REQUEST_CODE = 12345
 
         fun getStartIntent(context: Context, deal: TravelDeal? = null): Intent {
             return Intent(context, InsertActivity::class.java).apply {
@@ -48,6 +50,14 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
             priceEt.setText(mDeal.price)
         } else {
             mDeal = TravelDeal()
+        }
+
+        uploadImageBtn.setOnClickListener {
+            Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "Image/jpeg"
+                putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                startActivityForResult(Intent.createChooser(this, "Insert Picture"), UPLOAD_IMAGE_REQUEST_CODE)
+            }
         }
     }
 
@@ -77,6 +87,20 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == UPLOAD_IMAGE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                data ?: return
+
+                val imageUri = data.data
+                val ref = FirebaseUtil.mStorageRef.child(imageUri?.lastPathSegment ?: return)
+                ref.putFile(imageUri)
+            }
         }
     }
 

@@ -4,6 +4,8 @@ import android.app.Activity
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 object FirebaseUtil {
 
@@ -11,6 +13,8 @@ object FirebaseUtil {
     lateinit var mDatabaseReference: DatabaseReference
     lateinit var mFirebaseAuth: FirebaseAuth
     lateinit var mAuthListener: FirebaseAuth.AuthStateListener
+    lateinit var mStorage: FirebaseStorage
+    lateinit var mStorageRef: StorageReference
     lateinit var showMenu: () -> Unit
     var isAdmin: Boolean = false
 
@@ -46,6 +50,8 @@ object FirebaseUtil {
             if (it.currentUser == null) signIn.invoke()
             else  checkAdmin(it.uid ?: "")
         }
+
+        connectStorage()
     }
 
     fun logUserOut(activity: Activity) {
@@ -81,6 +87,11 @@ object FirebaseUtil {
 
     fun detachListener() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener)
+    }
+
+    fun connectStorage() {
+        mStorage = FirebaseStorage.getInstance()
+        mStorageRef = mStorage.reference.child("deals_pictures")
     }
 
     interface ShowMenuListener {
