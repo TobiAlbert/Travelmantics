@@ -54,7 +54,7 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
 
         uploadImageBtn.setOnClickListener {
             Intent(Intent.ACTION_GET_CONTENT).apply {
-                type = "Image/jpeg"
+                type = "image/*"
                 putExtra(Intent.EXTRA_LOCAL_ONLY, true)
                 startActivityForResult(Intent.createChooser(this, "Insert Picture"), UPLOAD_IMAGE_REQUEST_CODE)
             }
