@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -63,6 +64,11 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
                 putExtra(Intent.EXTRA_LOCAL_ONLY, true)
                 startActivityForResult(Intent.createChooser(this, "Insert Picture"), UPLOAD_IMAGE_REQUEST_CODE)
             }
+        }
+
+        uploadImageBtn.visibility = when (FirebaseUtil.isAdmin) {
+            true -> View.VISIBLE
+            else -> View.GONE
         }
     }
 
@@ -181,5 +187,4 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
         val width =  Resources.getSystem().displayMetrics.widthPixels
         Picasso.get().load(url).resize(width, width * 2 / 3).centerCrop().into(dealImage)
     }
-
 }
