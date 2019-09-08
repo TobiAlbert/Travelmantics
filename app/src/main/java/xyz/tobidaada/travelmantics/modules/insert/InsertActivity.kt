@@ -110,12 +110,18 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
                         return@addOnCompleteListener
                     }
 
+                    // get picture name
+                    val pictureName = it.result?.storage?.path
+
+                    if (!pictureName.isNullOrEmpty()) mDeal.imageName = pictureName
+
                     //TODO: Ensure file isn't saved before getting downloadable image
                     // uri
                     ref.downloadUrl.addOnSuccessListener { uri ->
                         mDeal.imageUrl = "$uri"
                         showImage(uri.toString())
                         Log.i("InsertActivity", "Upload URI: $uri")
+                        Log.i("InsertActivity", "Image Name: $pictureName")
                     }
                 }
             }
@@ -142,6 +148,16 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
         }
 
         mDatabaseReference.child(mDeal.id).removeValue()
+
+        if (!mDeal.imageName.isNullOrEmpty()) {
+            val picRef = FirebaseUtil.mStorage.reference.child(mDeal.imageName)
+            picRef.delete()
+                .addOnSuccessListener {
+                    Log.i("InsertActivity", "Image Successfully Deleted")
+                }.addOnFailureListener {
+                    Log.e("InsertActivity", "Error when trying to delete Deal", it)
+                }
+        }
     }
 
     private fun backToList() {

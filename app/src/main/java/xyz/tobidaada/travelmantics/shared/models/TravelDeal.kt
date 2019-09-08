@@ -25,7 +25,11 @@ data class TravelDeal(
 
     @get:PropertyName("image_url")
     @set:PropertyName("image_url")
-    var imageUrl: String
+    var imageUrl: String,
+
+    @get:PropertyName("image_name")
+    @set:PropertyName("image_name")
+    var imageName: String
 ) : Parcelable {
-    constructor() : this("", "", "", "", "")
+    constructor() : this("", "", "", "", "", "")
 }
