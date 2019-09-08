@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.database.DatabaseReference
@@ -15,6 +16,7 @@ import xyz.tobidaada.travelmantics.modules.deals.DealActivity
 import xyz.tobidaada.travelmantics.shared.models.TravelDeal
 import xyz.tobidaada.travelmantics.shared.utils.showToast
 import xyz.tobidaada.travelmantics.shared.utils.FirebaseUtil
+import xyz.tobidaada.travelmantics.shared.utils.makeToast
 
 class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
 
@@ -99,7 +101,19 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
 
                 val imageUri = data.data
                 val ref = FirebaseUtil.mStorageRef.child(imageUri?.lastPathSegment ?: return)
-                ref.putFile(imageUri)
+                ref.putFile(imageUri).addOnCompleteListener {
+                    if (!it.isSuccessful) {
+                        makeToast("Unable to upload image.")
+                        return@addOnCompleteListener
+                    }
+
+                    //TODO: Ensure file isn't saved before getting downloadable image
+                    // uri
+                    ref.downloadUrl.addOnSuccessListener { uri ->
+                        mDeal.imageUrl = "$uri"
+                        Log.i("InsertActivity", "Upload URI: $uri")
+                    }
+                }
             }
         }
     }
