@@ -3,20 +3,22 @@ package xyz.tobidaada.travelmantics.modules.insert
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_insert.*
 import xyz.tobidaada.travelmantics.R
 import xyz.tobidaada.travelmantics.modules.deals.DealActivity
 import xyz.tobidaada.travelmantics.shared.models.TravelDeal
-import xyz.tobidaada.travelmantics.shared.utils.showToast
 import xyz.tobidaada.travelmantics.shared.utils.FirebaseUtil
 import xyz.tobidaada.travelmantics.shared.utils.makeToast
+import xyz.tobidaada.travelmantics.shared.utils.showToast
 
 class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
 
@@ -50,6 +52,7 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
             titleEt.setText(mDeal.title)
             descriptionEt.setText(mDeal.description)
             priceEt.setText(mDeal.price)
+            showImage(mDeal.imageUrl)
         } else {
             mDeal = TravelDeal()
         }
@@ -111,6 +114,7 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
                     // uri
                     ref.downloadUrl.addOnSuccessListener { uri ->
                         mDeal.imageUrl = "$uri"
+                        showImage(uri.toString())
                         Log.i("InsertActivity", "Upload URI: $uri")
                     }
                 }
@@ -152,6 +156,14 @@ class InsertActivity : AppCompatActivity(), FirebaseUtil.ShowMenuListener {
         priceEt.isEnabled = isEnabled
         descriptionEt.isEnabled = isEnabled
         titleEt.isEnabled = isEnabled
+    }
+
+    private fun showImage(url: String) {
+
+        if (url.isEmpty()) return
+
+        val width =  Resources.getSystem().displayMetrics.widthPixels
+        Picasso.get().load(url).resize(width, width * 2 / 3).centerCrop().into(dealImage)
     }
 
 }
